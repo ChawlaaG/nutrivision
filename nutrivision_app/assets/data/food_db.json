@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Apple",
+    "calories": 52,
+    "protein": 0,
+    "carbs": 14,
+    "fat": 0,
+    "serving": "1 medium (100g)"
+  },
+  {
+    "name": "Banana",
+    "calories": 89,
+    "protein": 1,
+    "carbs": 23,
+    "fat": 0,
+    "serving": "1 medium (100g)"
+  },
+  {
+    "name": "Chicken Breast (Grilled)",
+    "calories": 165,
+    "protein": 31,
+    "carbs": 0,
+    "fat": 3,
+    "serving": "100g"
+  },
+  {
+    "name": "Rice (White, Cooked)",
+    "calories": 130,
+    "protein": 2,
+    "carbs": 28,
+    "fat": 0,
+    "serving": "100g"
+  },
+  {
+    "name": "Egg (Boiled)",
+    "calories": 155,
+    "protein": 13,
+    "carbs": 1,
+    "fat": 11,
+    "serving": "1 large"
+  },
+  {
+    "name": "Almonds",
+    "calories": 579,
+    "protein": 21,
+    "carbs": 22,
+    "fat": 50,
+    "serving": "100g"
+  },
+  {
+    "name": "Oats (Rolled)",
+    "calories": 389,
+    "protein": 16,
+    "carbs": 66,
+    "fat": 6,
+    "serving": "100g"
+  },
+  {
+    "name": "Milk (Whole)",
+    "calories": 61,
+    "protein": 3,
+    "carbs": 4,
+    "fat": 3,
+    "serving": "100ml"
+  },
+  {
+    "name": "Bread (Whole Wheat)",
+    "calories": 247,
+    "protein": 13,
+    "carbs": 41,
+    "fat": 3,
+    "serving": "100g"
+  },
+  {
+    "name": "Salmon (Grilled)",
+    "calories": 208,
+    "protein": 20,
+    "carbs": 0,
+    "fat": 13,
+    "serving": "100g"
+  },
+  {
+    "name": "Avocado",
+    "calories": 160,
+    "protein": 2,
+    "carbs": 8,
+    "fat": 14,
+    "serving": "100g"
+  },
+  {
+    "name": "Broccoli",
+    "calories": 34,
+    "protein": 2,
+    "carbs": 6,
+    "fat": 0,
+    "serving": "100g"
+  },
+  {
+    "name": "Potato (Boiled)",
+    "calories": 87,
+    "protein": 1,
+    "carbs": 20,
+    "fat": 0,
+    "serving": "100g"
+  },
+  {
+    "name": "Yogurt (Greek, Plain)",
+    "calories": 59,
+    "protein": 10,
+    "carbs": 3,
+    "fat": 0,
+    "serving": "100g"
+  },
+  {
+    "name": "Pasta (Cooked)",
+    "calories": 131,
+    "protein": 5,
+    "carbs": 25,
+    "fat": 1,
+    "serving": "100g"
+  },
+  {
+    "name": "Oreo Cookie",
+    "calories": 53,
+    "protein": 0,
+    "carbs": 8,
+    "fat": 2,
+    "serving": "1 cookie"
+  },
+  {
+    "name": "Coca-Cola",
+    "calories": 140,
+    "protein": 0,
+    "carbs": 39,
+    "fat": 0,
+    "serving": "1 can (330ml)"
+  },
+  {
+    "name": "McDonald's Big Mac",
+    "calories": 563,
+    "protein": 26,
+    "carbs": 44,
+    "fat": 33,
+    "serving": "1 burger"
+  }
+]
