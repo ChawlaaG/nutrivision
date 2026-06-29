@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../repositories/meal_repository.dart';
 import '../models/meal.dart';
 import '../services/streak_service.dart';
+import '../services/review_service.dart';
 
 final mealRepositoryProvider = Provider((ref) => MealRepository());
 
@@ -30,6 +31,7 @@ class MealNotifier extends StateNotifier<AsyncValue<void>> {
     state = await AsyncValue.guard(() async {
       await _repository.addMeal(meal);
       await StreakService().updateStreak();
+      await ReviewService().requestReviewIfAppropriate();
     });
   }
 

@@ -1,4 +1,4 @@
-package com.nutrivision.ai
+package com.nutrivision.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

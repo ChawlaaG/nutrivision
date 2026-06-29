@@ -165,4 +165,16 @@ class DatabaseService {
     final db = await database;
     return await db.delete(table, where: where, whereArgs: whereArgs);
   }
+
+  Future<void> clearAllData() async {
+    final db = await database;
+    final batch = db.batch();
+    batch.delete('meals');
+    batch.delete('water_logs');
+    batch.delete('weight_logs');
+    batch.delete('custom_foods');
+    batch.delete('sync_queue');
+    batch.delete('barcode_cache');
+    await batch.commit(noResult: true);
+  }
 }

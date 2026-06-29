@@ -14,7 +14,6 @@ class HealthService {
     await Permission.activityRecognition.request();
 
     final types = [
-      HealthDataType.STEPS,
       HealthDataType.ACTIVE_ENERGY_BURNED,
     ];
 
@@ -33,16 +32,7 @@ class HealthService {
   }
 
   Future<int> getTodaySteps() async {
-    final now = DateTime.now();
-    final midnight = DateTime(now.year, now.month, now.day);
-
-    try {
-      final steps = await _health.getTotalStepsInInterval(midnight, now);
-      return steps ?? 0;
-    } catch (e) {
-      debugPrint("Error fetching steps: $e");
-      return 0;
-    }
+    return 0;
   }
 
   Future<int> getTodayBurnedCalories() async {

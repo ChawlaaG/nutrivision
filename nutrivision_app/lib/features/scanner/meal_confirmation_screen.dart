@@ -27,6 +27,7 @@ class _MealConfirmationScreenState extends ConsumerState<MealConfirmationScreen>
   
   // Controller for the meal name (e.g., "Lunch", "South Indian Platter")
   final _mealNameController = TextEditingController();
+  final _hintController = TextEditingController();
 
   @override
   void initState() {
@@ -34,9 +35,16 @@ class _MealConfirmationScreenState extends ConsumerState<MealConfirmationScreen>
     _analyzeImage();
   }
 
-  Future<void> _analyzeImage() async {
+  @override
+  void dispose() {
+    _mealNameController.dispose();
+    _hintController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _analyzeImage({String? hint}) async {
     try {
-      final result = await _aiService.analyzeFoodImage(widget.imagePath);
+      final result = await _aiService.analyzeFoodImage(widget.imagePath, userHint: hint);
       
       if (mounted) {
         setState(() {
@@ -214,6 +222,29 @@ class _MealConfirmationScreenState extends ConsumerState<MealConfirmationScreen>
                       fillColor: Colors.grey[50],
                     ),
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  const Gap(20),
+
+                  // Optional Scan Hint Input
+                  TextField(
+                    controller: _hintController,
+                    decoration: InputDecoration(
+                      labelText: 'Optional details (e.g. ingredients, homemade, restaurant name)',
+                      hintText: 'e.g. low-fat dressing, cooked with olive oil',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.refresh, color: Color(0xFFFF7F50)),
+                        tooltip: 'Rescan with these details',
+                        onPressed: () {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          _analyzeImage(hint: _hintController.text);
+                        },
+                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      filled: true,
+                      fillColor: Colors.grey[50],
+                    ),
                   ),
                   const Gap(20),
 

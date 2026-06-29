@@ -6,7 +6,7 @@ import '../constants/secrets.dart';
 import '../utils/image_resizer.dart';
 
 class AIService {
-  static const String _geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  static const String _geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
   
   static const String _systemPrompt = '''
 ROLE: You are NutriVision, an elite AI Nutritional Auditor. Your goal is to rigorously audit the meal in the image for hidden calories, cooking oils, and volumetric portion sizes with 98% accuracy.
@@ -48,7 +48,7 @@ OUTPUT SCHEMA (Return ONLY raw JSON):
 }
 ''';
 
-  Future<Map<String, dynamic>> analyzeFoodImage(String imagePath) async {
+  Future<Map<String, dynamic>> analyzeFoodImage(String imagePath, {String? userHint}) async {
     try {
       if (Secrets.geminiApiKey.isEmpty) {
         throw Exception('Gemini API Key is missing. Please update lib/core/constants/secrets.dart.');
@@ -79,7 +79,9 @@ OUTPUT SCHEMA (Return ONLY raw JSON):
           "contents": [
             {
               "parts": [
-                {"text": "$_systemPrompt\n\nAnalyze this meal."},
+                {
+                  "text": "$_systemPrompt\n\nAnalyze this meal.${userHint != null && userHint.isNotEmpty ? '\nUser note/description: $userHint' : ''}"
+                },
                 {
                   "inline_data": {
                     "mime_type": "image/jpeg",
@@ -90,7 +92,82 @@ OUTPUT SCHEMA (Return ONLY raw JSON):
             }
           ],
           "generationConfig": {
-            "response_mime_type": "application/json"
+            "response_mime_type": "application/json",
+            "response_schema": {
+              "type": "OBJECT",
+              "properties": {
+                "summary": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "title": {"type": "STRING"},
+                    "total_calories": {"type": "INTEGER"},
+                    "confidence_score": {"type": "NUMBER"},
+                    "health_grade": {"type": "STRING"}
+                  },
+                  "required": ["title", "total_calories", "confidence_score", "health_grade"]
+                },
+                "macros": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "protein_g": {"type": "INTEGER"},
+                    "carbs_g": {"type": "INTEGER"},
+                    "fats_g": {"type": "INTEGER"}
+                  },
+                  "required": ["protein_g", "carbs_g", "fats_g"]
+                },
+                "micros_focus": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "sugar_g": {"type": "INTEGER"},
+                    "fiber_g": {"type": "INTEGER"},
+                    "sodium_mg": {"type": "INTEGER"}
+                  },
+                  "required": ["sugar_g", "fiber_g", "sodium_mg"]
+                },
+                "items": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "OBJECT",
+                    "properties": {
+                      "name": {"type": "STRING"},
+                      "detected_state": {"type": "STRING"},
+                      "portion_visual_cue": {"type": "STRING"},
+                      "calories": {"type": "INTEGER"},
+                      "macros": {
+                        "type": "OBJECT",
+                        "properties": {
+                          "p": {"type": "INTEGER"},
+                          "c": {"type": "INTEGER"},
+                          "f": {"type": "INTEGER"}
+                        },
+                        "required": ["p", "c", "f"]
+                      },
+                      "box_2d": {
+                        "type": "ARRAY",
+                        "items": {"type": "INTEGER"}
+                      }
+                    },
+                    "required": ["name", "detected_state", "portion_visual_cue", "calories", "macros"]
+                  }
+                },
+                "hidden_calorie_check": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "detected": {"type": "BOOLEAN"},
+                    "reason": {"type": "STRING"},
+                    "adjustment_calories": {"type": "INTEGER"}
+                  },
+                  "required": ["detected", "reason", "adjustment_calories"]
+                }
+              },
+              "required": [
+                "summary",
+                "macros",
+                "micros_focus",
+                "items",
+                "hidden_calorie_check"
+              ]
+            }
           }
         }),
       );
@@ -111,13 +188,7 @@ OUTPUT SCHEMA (Return ONLY raw JSON):
         throw Exception('Empty response from Gemini AI');
       }
 
-      // Clean up the response if it contains markdown code blocks
-      final cleanJson = content
-          .replaceAll('```json', '')
-          .replaceAll('```', '')
-          .trim();
-
-      return jsonDecode(cleanJson);
+      return jsonDecode(content.trim());
     } catch (e) {
       if (kDebugMode) {
         debugPrint('AI Analysis Error: $e');

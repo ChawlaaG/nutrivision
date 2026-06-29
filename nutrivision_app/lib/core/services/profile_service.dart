@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/database_service.dart';
 
 enum SyncStatus { synced, syncing, error, pending }
 
@@ -116,6 +117,16 @@ class ProfileService {
 
   Future<void> clearProfile() async {
     await resetApp();
+  }
+
+  Future<void> deleteUserData() async {
+    await DatabaseService().clearAllData();
+    await resetApp();
+    try {
+      await Supabase.instance.client.auth.signOut();
+    } catch (e) {
+      debugPrint('Cloud deletion signout error: $e');
+    }
   }
 
   // --- Cloud Sync Logic ---

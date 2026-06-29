@@ -19,7 +19,14 @@ import 'core/errors/global_error_handler.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  FlutterError.onError = GlobalErrorHandler.errorBuilder as void Function(FlutterErrorDetails)?;
+  // Show custom error screen for build errors
+  ErrorWidget.builder = GlobalErrorHandler.errorBuilder;
+
+  // Log other Flutter errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    GlobalErrorHandler.handleError(details.exception, details.stack);
+  };
+
   // For async errors not caught by Flutter framework
   PlatformDispatcher.instance.onError = (error, stack) {
     GlobalErrorHandler.handleError(error, stack);
@@ -37,7 +44,6 @@ void main() async {
 
     await NotificationService().init();
     await ReviewService().init();
-    await ReviewService().requestReviewIfAppropriate();
     
     // Initialize Local Food DB
     await LocalFoodService().loadDatabase();
@@ -77,6 +83,7 @@ class NutriVisionApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: initialRoute,
       routes: {
+        '/': (context) => const WelcomeScreen(),
         '/onboarding': (context) => const OnboardingWizard(),
         '/login': (context) => const LoginScreen(),
         '/welcome': (context) => const WelcomeScreen(),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/services/data_service.dart';
+import '../../core/services/profile_service.dart';
+import '../welcome/welcome_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -133,6 +135,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ? 'Data imported successfully'
                         : 'Import failed or cancelled'),
                   ),
+                );
+              }
+            },
+          ),
+          _buildActionTile(
+            Icons.delete_forever_rounded,
+            'Delete Account & Data',
+            'Permanently delete your profile and logs',
+            () async {
+              final navigator = Navigator.of(context);
+              final shouldDelete = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: const Color(0xFF2C2C2E),
+                  title: const Text('Delete Account?', style: TextStyle(color: Colors.white)),
+                  content: const Text(
+                    'This action will permanently delete all your local logs, profile configuration, and cloud-synced data. This cannot be undone.',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancel', style: TextStyle(color: Colors.blue)),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (shouldDelete == true) {
+                if (context.mounted) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                
+                await ProfileService().deleteUserData();
+                
+                navigator.pop(); // pop loading spinner
+                navigator.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                  (route) => false,
                 );
               }
             },
